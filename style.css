@@ -1,0 +1,71 @@
+/********** Base styles **********/
+* {
+  box-sizing: border-box;
+}
+h1 {
+  margin-bottom: 15px;
+  text-align:center;
+}
+.d1,.d3{
+  height:100px;
+}
+.d2{
+  height:600px;
+}
+.d4{
+  height:400px;
+}
+.d1,.d2,.d3,.d4 {
+  position:relative;
+  border: 1px solid black;
+  background-color: #999999;
+  width: 90%;
+  padding-top: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  font-family: Helvetica;
+  color: black;
+  margin-top:10px;
+}
+.t,.t2,.t3,.t4{
+    position:absolute;
+    top:0px;
+    width:20%;
+    right:0px;
+    border:1px solid black;
+    background:orange; 
+ }
+#butP,#butPT,#butPW,#butPL,#butSU{
+  width:10%;
+  
+  margin-right:20px;
+}
+/* Simple Responsive Framework. */
+.row {
+  width: 100%;
+}
+
+/********** Large devices only **********/
+@media (min-width: 992px) {
+  .col-lg-1,.col-lg-3,.col-lg-4 {
+    float: left;
+    
+  }
+  .col-lg-1 {
+    width: 80%;
+    
+  }
+  .col-lg-2 {
+    width: 18%;
+    float:right;
+  }
+  .col-lg-3 {
+    width: 80%;
+  }
+  .col-lg-4 {
+    width: 80%;
+
+  }
+
+
+}
