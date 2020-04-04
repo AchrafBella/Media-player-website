@@ -7,6 +7,170 @@
 <title>Media player local</title>
 
 </head>
+  <script type="text/javascript">
+        function extname(dir){
+          dir.replace(/\\/g,"\\");
+          var i = dir.lastIndexOf('\\');
+          var ch = ''
+          for(var j=i+1;j<dir.length;j++){
+            ch+=dir[j];
+          } 
+          return ch
+      }
+
+
+      var Compteurclics = [];
+      function getdata(){
+        
+        var xhttp=new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+              var javaobj = JSON.parse(xhttp.response);
+              var List_Keys = Object.keys(javaobj);
+              var tableau = document.getElementById('tab');
+              var n = tableau.childNodes.length;
+              
+              if (n==2){
+                 
+                  for(var i=0;i<List_Keys.length;i++){
+                    TR = document.createElement("tr");
+                    TD1  = document.createElement("td");
+                    Compteurclics[i]=0;
+                    a = document.createElement('a');
+                    a.innerHTML = javaobj[List_Keys[i]];
+                    a.id = i
+                    a.addEventListener("mouseover",function( event ) {   
+                    // on met l'accent sur la cible de mouseover
+                      event.target.style.color = "red";
+                      });
+                    a.addEventListener("mouseout",function( event ) {   
+                   // on met l'accent sur la cible de mouseover
+                      event.target.style.color = "black";
+                      });
+                    enter = document.createElement("br");
+                    TD1.appendChild(a);
+                    TD1.appendChild(enter);
+                    TR.appendChild(TD1);
+                    tableau.appendChild(TR);
+                    
+                    a.onclick = function(){
+
+                      var aud = document.getElementById('aud'); 
+                      var l = aud.childNodes;
+                      aud.removeChild(l[0]);
+                      var m = document.createElement("AUDIO");
+                      m.id = this.id;
+                      Compteurclics[parseInt(this.id)] += 1;
+                      name = javaobj[List_Keys[parseInt(this.id)]];
+                      if (m.canPlayType("audio/mpeg")) { 
+                          m.setAttribute("src", name +".mp3"); 
+                        } 
+                      else { 
+                        m.setAttribute("src", name +".ogg"); 
+                        }
+                      m.setAttribute("controls", "controls"); 
+                      aud.appendChild(m); 
+                      document.getElementById("nom_musique").innerHTML = name;
+                      if (Compteurclics[parseInt(this.id)]==3){
+                        var playlist_table = document.getElementById("playlist_table");
+                        a2 = document.createElement('a');
+                        a2.innerHTML = name;
+                        var s=this.id;
+                        
+                        a2.onclick= function(){
+                        var l = aud.childNodes;
+                        aud.removeChild(l[0]);
+                        var m2 = document.createElement("AUDIO");
+                        
+                        
+                        
+                        
+
+                        
+                        var name2 = javaobj[List_Keys[s]];
+                        if (m2.canPlayType("audio/mpeg")) { 
+                          m2.setAttribute("src", name2 +".mp3"); 
+                        } 
+                        else { 
+                          m2.setAttribute("src", name2 +".ogg"); 
+                        }                    
+                        m2.setAttribute("controls", "controls"); 
+                        aud.appendChild(m2); 
+                        document.getElementById("nom_musique").innerHTML = name2;
+
+                        };
+                        
+                        a2.addEventListener("mouseover",function( event ) {   
+                        // on met l'accent sur la cible de mouseover
+                        event.target.style.color = "red";
+                          });
+                        a2.addEventListener("mouseout",function( event ) {   
+                        // on met l'accent sur la cible de mouseover
+                          event.target.style.color = "black";
+                        });
+                        
+        
+                        enter2 = document.createElement("br");
+                        playlist_table.appendChild(a2);
+                        //playlist_table.appendChild(enter2);
+                       
+                        
+
+                        
+
+                      };
+                  };
+  };
+};    
+}
+      
+        };
+        xhttp.open("GET","playlist6.json", true);
+        xhttp.send();
+
+    }
+
+  var nb_clic = 0;
+  function nb_clics(a){
+    a.onclick = function(){
+      nb_clic +=1;
+    }
+  }
+
+function Remove(){
+  var re = document.getElementById('playlist_table');
+  //re.removeChild(re.firstChild);
+  l = re.childNodes;
+  if(l.length>0){
+    var N=prompt("choisissez la position du morceau que vous voulez supprimer de votre playlist");
+    if (isNaN(parseInt(N))){
+      alert("Vous devez saisir une valeur entiére");}
+    
+    else if(N>l.length-1){
+      n = l.length -1;
+      alert("La playlsit ne contient que" +" "+ n + " " +"éléments")
+      
+    }
+    else {
+        re.removeChild(l[N]);
+    }
+  }
+    //re.removeChild(l[0]);
+  
+  else {
+    alert('La playlist est vide');}
+    
+    
+  }
+  
+  
+
+
+
+    </script>
+
+
+  
 <body>
 <h1>Media player</h1>
 
@@ -14,24 +178,37 @@
   <div class="col-lg-1"> <section class="d1">
 
     <p class="b"><a class="t">Player</a></p>
+    <p id="nom_musique">Ici on va afficher le nome de la musique</p>
+    <p id="aud">
+       On va afficher notre audion ici
+    </p>
+    <a id="au"></a>
   </section></div>
-  <div class="col-lg-2"><section class="d2">
+  <div class="col-lg-2">
+
+    <section class="d2">
    
     <p class="b2"> <a class="t2">Playlist</a></p>
-  </section></div>
-  <div class="col-lg-3"><section class="d3">
+    <p id="Playlist"><p>
+    <table id="playlist_table">
+      
+    </table>
 
-    <p class="b3"><a class="t3">Controls</a>
-        <button id='butP' value ='Pause' onclick="">Pause</button> 
-        <button id='butPT' value ='Play track' onclick="">Play Track</button>
-        <button id='butPW' value ='Play Work' onclick="">Play Work</button>
-        <button id='butPL' value ='Play list' onclick="">Play List</button>
-        <button id='butSU' value ='Show unknown' onclick="">Show unknown</button>
-    </p>
+     <button id="remove" onclick="Remove()">Remove</button>
+
+    
+
+    
   </section></div>
+ 
   <div class="col-lg-4"><section class="d4">
 
     <p class="b4"><a class="t4">Selection</a></p>
+
+    <table id="tab">
+          <th><button id="but_list" onclick="getdata()">Tous les morceaux</button></th>   
+    </table>  
+    
   </section></div>
 </div>
 
