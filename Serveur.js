@@ -1,11 +1,9 @@
-
+// importing packages 
 var express = require('express');
 var app = express();
-
-
 var fs = require('fs');
 var path = require('path');
-
+// functions
 function extname(dir){
 var i = dir.lastIndexOf('\\');
 var ch = ''
@@ -95,7 +93,7 @@ dir = __dirname;
 
 crawl(dir);
 
-
+// server
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res, next){
