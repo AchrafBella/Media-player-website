@@ -55,7 +55,6 @@ function crawl(dir){
 			
 			//console.log(typeof next);
 			
-			//tab = tab + [next];
 			j+=1;
 			
 			//console.log(chemin);
@@ -71,8 +70,9 @@ function crawl(dir){
 			console.log(error);
 		}
 
+	
 let donnees = JSON.stringify(fil);
-fs.writeFile('./public/playlist6.json', donnees, function(erreur) {
+fs.writeFile('./public/playlist.json', donnees, function(erreur) {
     if (erreur) {
         console.log(erreur)}
 });
@@ -83,7 +83,6 @@ console.log(fil);
 }
 
 dir = __dirname;
-
 crawl(dir);
 /////////////////////On accède au dossier public qui se trouve dans le meme endroit que serveur.js pour afficher le contenu de index.html
 
