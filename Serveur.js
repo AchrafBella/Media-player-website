@@ -1,20 +1,22 @@
-////////////////////////Noter que les fichiers index.html et style.css doivent se trouver dans un dosiier nommé public qui se trouve dans le 
-///////////meme endroit 
+
+////////////////////////Noter que les fichiers index.html et style.css doivent se trouver dans un dosiier nommé public qui se trouve dans le meme endroit 
 /////////////////////// que le serveur. Les fichiers audio et video à lire doivent se trouver dans le dossier public aussi//////////////////////////////// 
 
 
-////////////Pour que ca il faut aller au cmd (l'invite de commande) puis aller à l'emplacement du fichier serveur.js puis taper 
-//////////////////////npm.install express
-/////////// puis taper node server.js pour lancer le serveur///////////////////////////////////////////////////////////////////////////////////////
+////////////Pour que ca il faut aller au cmd (l'invite de commande) puis aller à l'emplacement du fichier serveur.js puis taper npm.install express
+/////////// puis taper node server.js pour lancer le serveur//////////////////////////////////////////////////////////////////////////////////////
 
 
-/ importing packages 
 var express = require('express');
 var app = express();
+
+
 var fs = require('fs');
 var path = require('path');
-//La fonction extname(dir) permet  d'extraire le nom d'un fichier. On élémine toutes les \ avant le nom fu fichier. 
-function extname(dir){
+
+
+//La fonction extpath(dir) permet  d'extraire le nom d'un fichier. On élémine toutes les \ avant le nom fu fichier. 
+function extpath(dir){
 var i = dir.lastIndexOf('\\');
 var ch = ''
 for(var j=i+1;j<dir.length;j++){
@@ -22,8 +24,8 @@ for(var j=i+1;j<dir.length;j++){
 }
 	return ch
 }
-//La fonction crawl(dir) permet d'extraire toutes les videos et les audios qui existent dans le serveur et stocker leurs 
-//noms dans un fichier JSON
+
+//La fonction crawl(dir) permet d'extraire toutes les videos et les audios qui existent dans le serveur et stocker leurs noms dans un fichier JSON
 var j=0;
 var fil = {};
 var chemin = "";
@@ -47,14 +49,15 @@ function crawl(dir){
 		else {
 			var ext = next[next.length-3]+ next[next.length-2] + next[next.length-1];
 			//console.log(ext);
-			if(ext=='mp3' || ext=='mp4'){
+			if(ext=='mp3' || ext=="mp4"){
 			
 			//console.log(i);
 			chemin ="chemin"+j;
-			fil[chemin] = extname(next);
+			fil[chemin] = extpath(next);
 			
 			//console.log(typeof next);
 			
+			//tab = tab + [next];
 			j+=1;
 			
 			//console.log(chemin);
@@ -71,24 +74,21 @@ function crawl(dir){
 		}
 
 let donnees = JSON.stringify(fil);
-fs.writeFile('./public/playlist.json', donnees, function(erreur) {
+fs.writeFile('./public/playlist6.json', donnees, function(erreur) {
     if (erreur) {
         console.log(erreur)}
 });
+
 
 console.log(fil);
 
 }
 
-
 dir = __dirname;
 
-
 crawl(dir);
+/////////////////////On accède au dossier public qui se trouve dans le meme endroit que serveur.js pour afficher le contenu de index.html
 
-// server
-/////////////////////On accède au dossier public qui se trouve dans le meme endroit que serveur.js pour afficher
-///le contenu de index.html
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res, next){
