@@ -5,21 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="style.css" type="text/css" rel="stylesheet">
 <title>Media player local</title>
-
-</head>
-  <script type="text/javascript">
-        function extname(dir){
-          dir.replace(/\\/g,"\\");
-          var i = dir.lastIndexOf('\\');
-          var ch = ''
-          for(var j=i+1;j<dir.length;j++){
-            ch+=dir[j];
-          } 
-          return ch
+<script type="text/javascript">
+       
+       //La function extraire_nom permet d'extraire le nom de la musique ou de la vieo à partir de l'url (elle enlève le .mp3 ou .mp4)
+      function extraire_nom(chemin){
+      
+      var ch = ''
+      for(var j=0;j<chemin.length-4;j++){
+        ch+=chemin[j];
+      }
+      return ch
       }
 
-
+      //On définit une variable compteur de clics qui s'incrémente à chaque fois on clique et on lit une vidéo ou une musique pour l'ajouter à la playlist
+      //si on en clique 3 fois ou plus.
       var Compteurclics = [];
+
+      // La fonction getdata permet de lire le json qui contient la liste des vidéos et des musiques qu'on crée par la fonction crawl(dir) coté serveur
+      //Et ajoute les noms des vidéos ou des musiques  après application de extraire_nom(chemin) à un tableau dans la section Selection. Et à chaque fois 
+      // qu'on clique sur un élément de cette liste on lit l'audio ou la vidéo par les fonctions play_audio(nom) ou play_video(nom).
       function getdata(){
         
         var xhttp=new XMLHttpRequest();
@@ -37,7 +41,9 @@
                     TD1  = document.createElement("td");
                     Compteurclics[i]=0;
                     a = document.createElement('a');
-                    a.innerHTML = javaobj[List_Keys[i]];
+                    
+                    
+                    a.innerHTML = extraire_nom(javaobj[List_Keys[i]]);
                     a.id = i
                     a.addEventListener("mouseover",function( event ) {   
                     // on met l'accent sur la cible de mouseover
@@ -54,24 +60,30 @@
                     tableau.appendChild(TR);
                     
                     a.onclick = function(){
-
                       var aud = document.getElementById('aud'); 
                       var l = aud.childNodes;
                       aud.removeChild(l[0]);
-                      var m = document.createElement("AUDIO");
-                      m.id = this.id;
+
+
+                      var chemin = javaobj[List_Keys[parseInt(this.id)]]; 
                       Compteurclics[parseInt(this.id)] += 1;
-                      name = javaobj[List_Keys[parseInt(this.id)]];
-                      if (m.canPlayType("audio/mpeg")) { 
-                          m.setAttribute("src", name +".mp3"); 
-                        } 
-                      else { 
-                        m.setAttribute("src", name +".ogg"); 
-                        }
-                      m.setAttribute("controls", "controls"); 
-                      aud.appendChild(m); 
+                      
+                      name = extraire_nom(chemin);
+                      if(chemin[chemin.length-3] + chemin[chemin.length-2] + chemin[chemin.length-1] == "mp3"){
+
+                      changesizeaudio();
+                      play_audio(name);
+                      
+                      }
+                      
+                      else{
+                      changesizevideo();
+                       play_video(name);
+                    }
+                      
                       document.getElementById("nom_musique").innerHTML = name;
                       if (Compteurclics[parseInt(this.id)]==3){
+
                         var playlist_table = document.getElementById("playlist_table");
                         a2 = document.createElement('a');
                         a2.innerHTML = name;
@@ -80,25 +92,28 @@
                         a2.onclick= function(){
                         var l = aud.childNodes;
                         aud.removeChild(l[0]);
-                        var m2 = document.createElement("AUDIO");
                         
-                        
-                        
-                        
-
-                        
-                        var name2 = javaobj[List_Keys[s]];
-                        if (m2.canPlayType("audio/mpeg")) { 
-                          m2.setAttribute("src", name2 +".mp3"); 
-                        } 
-                        else { 
-                          m2.setAttribute("src", name2 +".ogg"); 
-                        }                    
-                        m2.setAttribute("controls", "controls"); 
-                        aud.appendChild(m2); 
+                        var chemin = javaobj[List_Keys[parseInt(s)]]; 
+                        var name2 = extraire_nom(chemin);
+                        if(chemin[chemin.length-3] + chemin[chemin.length-2] + chemin[chemin.length-1] == "mp3"){
+                        changesizeaudio();
+                        play_audio(name2);
                         document.getElementById("nom_musique").innerHTML = name2;
+                       
+                        }
+                         else{
+                      changesizevideo();
+                      
+                    
 
-                        };
+                      play_video(name2)
+                      document.getElementById("nom_musique").innerHTML = name2;
+                    }
+
+
+
+
+                         }
                         
                         a2.addEventListener("mouseover",function( event ) {   
                         // on met l'accent sur la cible de mouseover
@@ -112,14 +127,10 @@
         
                         enter2 = document.createElement("br");
                         playlist_table.appendChild(a2);
-                        //playlist_table.appendChild(enter2);
                        
-                        
-
-                        
-
                       };
-                  };
+                    }
+                    
   };
 };    
 }
@@ -130,16 +141,67 @@
 
     }
 
-  var nb_clic = 0;
-  function nb_clics(a){
-    a.onclick = function(){
-      nb_clic +=1;
-    }
-  }
 
+//La fonction play_video(nom) prend en argument le nom d'une vidéo (fournit comme url) et cree 
+//un dom video qu'on ajoute a la section player.
+function play_video(nom){
+var x = document.createElement("VIDEO");
+
+if (x.canPlayType("video/mp4")) {
+    x.setAttribute("src",nom + ".mp4");
+} else {
+    x.setAttribute("src",nom + ".ogg");
+}
+x.setAttribute("width", "750");
+x.setAttribute("height", "350");
+x.setAttribute("controls", "controls");
+
+d = document.getElementById('aud');
+d.appendChild(x);
+
+}  
+
+//La fonction play_audio(nom) prend en argument le nom d'une musique (fournit comme url) et cree 
+//un dom video qu'on ajoute a la section player
+ function play_audio(nom){
+var x = document.createElement("AUDIO");
+
+if (x.canPlayType("audio/mpeg")) { 
+  x.setAttribute("src", nom +".mp3"); 
+                      } 
+ else {                         
+  x.setAttribute("src", nom +".ogg");
+     }                     
+  x.setAttribute("controls", "controls"); 
+
+d = document.getElementById('aud');
+d.appendChild(x);
+
+} 
+
+//La fonction changesizevideo() permet de changer les dimensions des sections player et selection pour lire une vidéo
+function changesizevideo(){
+  var d1 = document.getElementById('d1');
+   var d3 = document.getElementById('d4'); 
+  d1.style["height"] = '400px';
+  d3.style["height"] = '250px';
+
+}
+//La fonction changesizeaudio() permet de changer les dimensions des sections player et selection pour lire un audio
+function changesizeaudio(){
+  var d1 = document.getElementById('d1');
+   var d4 = document.getElementById('d4'); 
+  d1.style["height"] = '150px';
+  d4.style["height"] = '500px';
+
+}
+ 
+//La fonction remove() permet d'effacer un element de la playlist. Il suffit de fournir la position de l'element dans la playlist après qu'on clique sur
+//le bouton remove en bas à droite de la section playlist et cet élément sera supprimé. Le nafigateur affiche une pop-op si on fournit un nombre
+//non entier ou si la playlist est vide
 function Remove(){
   var re = document.getElementById('playlist_table');
-  //re.removeChild(re.firstChild);
+ 
   l = re.childNodes;
   if(l.length>0){
     var N=prompt("choisissez la position du morceau que vous voulez supprimer de votre playlist");
@@ -155,7 +217,7 @@ function Remove(){
         re.removeChild(l[N]);
     }
   }
-    //re.removeChild(l[0]);
+   
   
   else {
     alert('La playlist est vide');}
@@ -167,15 +229,19 @@ function Remove(){
 
 
 
+
+
     </script>
 
-
   
+
+</head>
+
 <body>
 <h1>Media player</h1>
 
 <div class="row">
-  <div class="col-lg-1"> <section class="d1">
+  <div class="col-lg-1"> <section id="d1">
 
     <p class="b"><a class="t">Player</a></p>
     <p id="nom_musique">Ici on va afficher le nome de la musique</p>
@@ -186,11 +252,13 @@ function Remove(){
   </section></div>
   <div class="col-lg-2">
 
-    <section class="d2">
+    <section id="d2">
    
     <p class="b2"> <a class="t2">Playlist</a></p>
     <p id="Playlist"><p>
+     
     <table id="playlist_table">
+
       
     </table>
 
@@ -201,12 +269,12 @@ function Remove(){
     
   </section></div>
  
-  <div class="col-lg-4"><section class="d4">
+  <div class="col-lg-4"><section id="d4">
 
     <p class="b4"><a class="t4">Selection</a></p>
 
     <table id="tab">
-          <th><button id="but_list" onclick="getdata()">Tous les morceaux</button></th>   
+          <th><button id="but_list" onclick="getdata()">Liste de tous les morceaux et les vidéos</button></th>   
     </table>  
     
   </section></div>
