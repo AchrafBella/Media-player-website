@@ -1,3 +1,6 @@
+# Rapport-Projet-Javascript
+École Centrale de Lyon
+
 
 Noter que les fichiers index.html et style.css doivent se trouver dans un dossier nommé public qui se trouve dans le meme endroit 
 que Serveur.js. Les fichiers audio et video à lire doivent se trouver dans le dossier public aussi.
