@@ -136,38 +136,65 @@
 }
       
         };
-        xhttp.open("GET","playlist6.json", true);
+        xhttp.open("GET","playlist.json", true);
         xhttp.send();
 
     }
-
-//La fonction play_video(nom) prend en argument le nom d'une vidéo (fournit comme url) et lit
-//une video qu'on ajoute a la section player.
+//La fonction play_video(nom) prend en argument le nom d'une vidéo (fournit comme url) et cree 
+//un dom video qu'on ajoute a la section player.
 function play_video(nom){
 var x = document.createElement("VIDEO");
 
+if (x.canPlayType("video/mp4")) {
+    x.setAttribute("src",nom + ".mp4");
+} else {
+    x.setAttribute("src",nom + ".ogg");
+}
+x.setAttribute("width", "750");
+x.setAttribute("height", "350");
+x.setAttribute("controls", "controls");
 
-    Play("src"=nom + ".mp4");
-
+d = document.getElementById('aud');
+d.appendChild(x);
 
 }  
 
-//La fonction play_audio(nom) prend en argument le nom d'une musique (fournit comme url) et lit 
-//un audio qu'on ajoute a la section player
+//La fonction play_audio(nom) prend en argument le nom d'une musique (fournit comme url) et cree 
+//un dom video qu'on ajoute a la section player
  function play_audio(nom){
-Play("src"=nom + ".mp3");
+var x = document.createElement("AUDIO");
+
+if (x.canPlayType("audio/mpeg")) { 
+  x.setAttribute("src", nom +".mp3"); 
+                      } 
+ else {                         
+  x.setAttribute("src", nom +".ogg");
+     }                     
+  x.setAttribute("controls", "controls"); 
+
+d = document.getElementById('aud');
+d.appendChild(x);
 
 } 
 
+//La fonction changesizevideo() permet de changer les dimensions des sections player et selection pour lire une vidéo
+function changesizevideo(){
+  var d1 = document.getElementById('d1');
+   var d3 = document.getElementById('d4'); 
+  d1.style["height"] = '400px';
+  d3.style["height"] = '250px';
 
-//La fonction changesiz permet de changer les dimensions des sections player et selection pour lire un audio ou une vidéo
-function changesize(){
+}
+//La fonction changesizeaudio() permet de changer les dimensions des sections player et selection pour lire un audio
+function changesizeaudio(){
   var d1 = document.getElementById('d1');
    var d4 = document.getElementById('d4'); 
   d1.style["height"] = '150px';
   d4.style["height"] = '500px';
 
 }
+ 
+       
  
 //La fonction remove() permet d'effacer un element de la playlist. Il suffit de fournir la position de l'element dans la playlist après qu'on clique sur
 //le bouton remove en bas à droite de la section playlist et cet élément sera supprimé. Le nafigateur affiche une pop-op si on fournit un nombre
